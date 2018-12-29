@@ -1,49 +1,34 @@
 import React, { Component } from "react";
-// import { Router, Route } from 'react-router'
 import SearchForm from "./childComponents/SearchForm";
 import ResultList from "./childComponents/ResultList";
+import SavedList from "./childComponents/SavedList";
 import API from "../utils/API";
-// import Axios from "axios";
 
 class Container extends Component {
   state = {
     search: "",
-    results: []
+    results: [],
+    saved: []
   };
 
   componentDidMount() {
-    // this.searchNYT("anteater");
+    this.getSaved();
     console.log("mounted");
   };
 
   searchNYT = query => {
     console.log("searchNYT: ", query);
-    // API.create(query)
-    // .then((response)=> console.log("container response: ", response))
-    // .catch(err => console.log("container create error: ", err));
     API.search(query)
     .then(res => {
-      console.log("res: ", res.data.response.docs);
       console.log("pre search state: ", this.state.results);
       let stateUpdate = [];
       for(let i=0; i<10; i++){
-        let updateObject = {
-          title: "",
-          byline: "",
-          url: "",
-          _id: ""
-        }
-        if(res.data.response.docs[i].snippet){
-          updateObject.title = res.data.response.docs[i].snippet;
-        }
-        if(res.data.response.docs[i].byline){
-          updateObject.byline = res.data.response.docs[i].byline.original;
-        }
-        if(res.data.response.docs[i].web_url){
-          updateObject.url = res.data.response.docs[i].web_url;
-        }
+        let updateObject = {};
+        if(res.data.response.docs[i].snippet) updateObject.title = res.data.response.docs[i].snippet;
+        if(res.data.response.docs[i].byline) updateObject.byline = res.data.response.docs[i].byline.original;
+        if(res.data.response.docs[i].web_url) updateObject.url = res.data.response.docs[i].web_url;
         updateObject._id = res.data.response.docs[i]._id
-        console.log("updateObject: ", updateObject);
+        // console.log("updateObject: ", updateObject);
         stateUpdate.push(updateObject);
       }
       console.log("stateUpdate: ", stateUpdate);
@@ -60,6 +45,10 @@ class Container extends Component {
     for(let i=0; i< this.state.results.length; i++){
       if (this.state.results[i]._id === input){
         console.log("this one! ", this.state.results[i]);
+        let newState = this.state.saved.push(this.state.results[i]);
+        this.setState({
+          saved: newState
+        })
         API.create(this.state.results[i])
         .then(result => {
           console.log("saveArticle result: ", result);
@@ -67,6 +56,18 @@ class Container extends Component {
         .catch(err => console.log("saveArticle result error: ", err))
       }
     }
+  }
+
+  getSaved = () => {
+    console.log("get saved");
+    API.getSaved()
+    .then(result => {
+      console.log("get saved result: ", result.data);
+      this.setState({
+        saved: result.data
+      })
+      return result.data
+    })
   }
 
   handleInputChange = event => {
@@ -77,7 +78,6 @@ class Container extends Component {
     });
   };
 
-  // When the form is submitted, search the Giphy API for `this.state.search`
   handleFormSubmit = event => {
     event.preventDefault();
     this.searchNYT(this.state.search);
@@ -85,13 +85,22 @@ class Container extends Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <SearchForm
           search={this.state.search}
           handleFormSubmit={this.handleFormSubmit}
           handleInputChange={this.handleInputChange}
         />
-        <ResultList cb={this.saveArticle} results={this.state.results} />
+        <div className="row">
+          <section className="col col-8">
+            <h2>Search Results</h2>
+            <ResultList save={this.saveArticle} results={this.state.results} />
+          </section>
+          <section className="col col-4">
+          <h2>Saved Articles</h2>
+            <SavedList read={this.readArticle} results={this.state.saved} />
+          </section>
+        </div>
       </div>
     );
   }

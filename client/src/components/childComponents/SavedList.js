@@ -1,13 +1,13 @@
 import React from "react";
 
-const ResultList = props => {
+const SavedList = props => {
   // console.log("props: ", props);
   return(
     <ul className="list-group">
       {props.results.map(result => {
         console.log("result: ", result);
         const callback = () => {
-          props.save(result._id)
+          props.read(result._id)
         }
         return (
           <li onClick={callback}
@@ -24,4 +24,4 @@ const ResultList = props => {
   )
 };
 
-export default ResultList;
+export default SavedList;
