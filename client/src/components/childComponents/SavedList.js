@@ -12,7 +12,7 @@ const SavedList = props => {
         return (
           <li 
             key={result._id}
-            className="list-group-item"
+            className="list-group-item text-truncate"
           >
             <ReadBtn 
               name="Read"

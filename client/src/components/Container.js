@@ -39,7 +39,8 @@ class Container extends Component {
       }
       // console.log("stateUpdate: ", stateUpdate);
       this.setState({ 
-        results: stateUpdate
+        results: stateUpdate,
+        query: query
       });
       console.log("post search state: ", this.state);
     })
@@ -133,7 +134,7 @@ class Container extends Component {
           />
           <div className="row">
             <section className="col col-8">
-              <h2>Search Results</h2>
+              <h2>Search Results: <i>{this.state.query}</i></h2>
               <ResultList 
                 read={this.readArticle} 
                 save={this.saveArticle} 
