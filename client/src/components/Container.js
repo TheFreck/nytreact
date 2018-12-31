@@ -3,24 +3,30 @@ import SearchForm from "./childComponents/SearchForm";
 import ResultList from "./childComponents/ResultList";
 import SavedList from "./childComponents/SavedList";
 import API from "../utils/API";
+import ReadPanel from "./childComponents/ReadPanel";
+import ReadBtn from "./buttons/ReadBtn";
+import SaveBtn from "./buttons/SaveBtn";
 
 class Container extends Component {
   state = {
-    search: "",
     results: [],
-    saved: []
+    saved: [],
+    read: {
+      read: false,
+      body: {}
+    }
   };
 
   componentDidMount() {
     this.getSaved();
-    console.log("mounted");
+    this.searchNYT("Florida Man");
   };
 
   searchNYT = query => {
     console.log("searchNYT: ", query);
     API.search(query)
     .then(res => {
-      console.log("pre search state: ", this.state.results);
+      console.log("pre search state: ", this.state);
       let stateUpdate = [];
       for(let i=0; i<10; i++){
         let updateObject = {};
@@ -31,27 +37,25 @@ class Container extends Component {
         // console.log("updateObject: ", updateObject);
         stateUpdate.push(updateObject);
       }
-      console.log("stateUpdate: ", stateUpdate);
+      // console.log("stateUpdate: ", stateUpdate);
       this.setState({ 
         results: stateUpdate
       });
-      console.log("post search state: ", this.state.results);
+      console.log("post search state: ", this.state);
     })
     .catch(err => console.log("answer error: ", err));
   };
 
-  saveArticle = (input) => {
-    console.log("saveArticle: ", input);
+  saveArticle = input => {
+    console.log("saveArticles: ", input);
     for(let i=0; i< this.state.results.length; i++){
       if (this.state.results[i]._id === input){
-        console.log("this one! ", this.state.results[i]);
-        let newState = this.state.saved.push(this.state.results[i]);
-        this.setState({
-          saved: newState
-        })
-        API.create(this.state.results[i])
+        let thisOne = this.state.results[i];
+        console.log("Save this one! ", thisOne);
+        API.create(thisOne)
         .then(result => {
-          console.log("saveArticle result: ", result);
+          console.log("saveArticle result: ", result.status);
+          this.getSaved();
         })
         .catch(err => console.log("saveArticle result error: ", err))
       }
@@ -62,11 +66,31 @@ class Container extends Component {
     console.log("get saved");
     API.getSaved()
     .then(result => {
-      console.log("get saved result: ", result.data);
+      // console.log("get saved result: ", result.data);
       this.setState({
         saved: result.data
       })
       return result.data
+    })
+  }
+
+  deleteArticle = input => {
+    console.log("delete article: ", input);
+    API.delete(input)
+    .then((outcome) => {
+      console.log("delete outcome: ", outcome);
+      this.getSaved();
+    })
+    .catch(err => console.log("delete error: ", err));
+  }
+
+  readArticle = result => {
+    console.log("read url: ", result);
+    this.setState({ 
+      read: {
+        read: !this.state.read.read,
+        body: result
+      }
     })
   }
 
@@ -84,25 +108,48 @@ class Container extends Component {
   };
 
   render() {
-    return (
-      <div className="container">
-        <SearchForm
-          search={this.state.search}
-          handleFormSubmit={this.handleFormSubmit}
-          handleInputChange={this.handleInputChange}
-        />
-        <div className="row">
-          <section className="col col-8">
-            <h2>Search Results</h2>
-            <ResultList save={this.saveArticle} results={this.state.results} />
-          </section>
-          <section className="col col-4">
-          <h2>Saved Articles</h2>
-            <SavedList read={this.readArticle} results={this.state.saved} />
-          </section>
+    if(this.state.read.read === true) {
+      return (
+        <div className="container"
+          >
+          <ReadBtn 
+            name="Back"
+            click={this.readArticle}
+            url=""/>
+          <SaveBtn 
+              save={this.saveArticle}
+              id={this.state.read.body._id} />
+          <ReadPanel 
+            url={this.state.read.body} />
         </div>
-      </div>
-    );
+      )
+    }else{
+      return (
+        <div className="container">
+          <SearchForm
+            search={this.state.search}
+            handleFormSubmit={this.handleFormSubmit}
+            handleInputChange={this.handleInputChange}
+          />
+          <div className="row">
+            <section className="col col-8">
+              <h2>Search Results</h2>
+              <ResultList 
+                read={this.readArticle} 
+                save={this.saveArticle} 
+                results={this.state.results} />
+            </section>
+            <section className="col col-4">
+              <h2>Saved Articles</h2>
+              <SavedList 
+                read={this.readArticle}
+                delete={this.deleteArticle}
+                results={this.state.saved} />
+            </section>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

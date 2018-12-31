@@ -127,7 +127,7 @@ db.Book
   .remove({})
   .then(() => db.Book.collection.insertMany(bookSeed))
   .then(data => {
-    console.log(data.result.n + " records inserted!");
+    // console.log(data.result.n + " records inserted!");
     process.exit(0);
   })
   .catch(err => {

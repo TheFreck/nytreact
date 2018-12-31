@@ -10,10 +10,14 @@ export default {
     return axios.get(BASEURL + query + APIKEY);
   },
   create: query => {
-    console.log("queried", query);
+    // console.log("create queried", query);
     return axios.post("/api/articles/", query);
   },
   getSaved: () => {
     return axios.get("/api/articles/");
+  },
+  delete: query => {
+    console.log("deleting: ", query);
+    return axios.delete("/api/articles/" + query);
   }
 };
