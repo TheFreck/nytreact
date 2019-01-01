@@ -4,11 +4,12 @@ import DeleteBtn from "../buttons/DeleteBtn";
 
 const SavedList = props => {
   let results = props.results;
+  console.log("saved results: ", results);
   return(
     <ul className="list-group">
       {/* {console.log("saved list props: ", results)} */}
       {results.map(result => {
-        // console.log("saved list result: ", result);
+        console.log("saved list result: ", result);
         return (
           <li 
             key={result._id}
@@ -17,7 +18,7 @@ const SavedList = props => {
             <ReadBtn 
               name="Read"
               click={props.read}
-              url={result.url}/>
+              result={result} />
             <DeleteBtn 
               id={result._id} 
               delete={props.delete} />
