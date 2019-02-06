@@ -3,6 +3,7 @@ import React from "react";
 const SearchForm = props => {
   return (
     <form>
+      <h1>Search for New York Times articles</h1>
       <div className="form-group">
         <label htmlFor="search">Search:</label>
         <input
