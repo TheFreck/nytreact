@@ -13,7 +13,7 @@ const SavedList = props => {
         return (
           <li 
             key={result._id}
-            className="list-group-item text-truncate"
+            className="list-group-item"
           >
             <ReadBtn 
               name="Read"
@@ -24,7 +24,7 @@ const SavedList = props => {
               delete={props.delete} />
             <h3>{result.title}</h3>
             <h5>{result.byline ? result.byline : "nobody"}</h5>
-            <p>{result.url}</p>
+            <p className="wrap">{result.url}</p>
           </li>
         )})
       }

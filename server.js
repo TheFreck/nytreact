@@ -1,9 +1,19 @@
+// const dotenv = require("dotenv");
 const express = require("express");
 
 const mongoose = require("mongoose");
 const routes = require("./routes");
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// const result = dotenv.config()
+ 
+// if (result.error) {
+//   throw result.error
+// }
+ 
+// console.log("server result.parsed: ", result.parsed)
+// console.log("server process.env: ", process.env);
 
 // Define middleware here
 app.use(express.urlencoded({ extended: true }));

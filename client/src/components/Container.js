@@ -19,7 +19,7 @@ class Container extends Component {
 
   componentDidMount() {
     this.getSaved();
-    this.searchNYT("Florida Man");
+    this.searchNYT("Florida-Man");
   };
 
   searchNYT = query => {
@@ -105,23 +105,26 @@ class Container extends Component {
 
   handleFormSubmit = event => {
     event.preventDefault();
+    console.log("search: ", this.state.search);
     this.searchNYT(this.state.search);
   };
 
   render() {
     if(this.state.read.read === true) {
       return (
-        <div className="container"
-          >
+        <div className="container">
           <ReadBtn 
             name="Back"
             click={this.readArticle}
-            url=""/>
+            url=""
+          />
           <SaveBtn 
-              save={this.saveArticle}
-              id={this.state.read.body._id} />
+            save={this.saveArticle}
+            id={this.state.read.body._id} 
+          />
           <ReadPanel 
-            url={this.state.read.body} />
+            url={this.state.read.body} 
+          />
         </div>
       )
     }else{
@@ -138,14 +141,16 @@ class Container extends Component {
               <ResultList 
                 read={this.readArticle} 
                 save={this.saveArticle} 
-                results={this.state.results} />
+                results={this.state.results} 
+              />
             </section>
             <section className="col col-4">
               <h2>Saved Articles</h2>
               <SavedList 
                 read={this.readArticle}
                 delete={this.deleteArticle}
-                results={this.state.saved} />
+                results={this.state.saved} 
+              />
             </section>
           </div>
         </div>

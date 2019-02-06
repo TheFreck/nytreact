@@ -12,4 +12,7 @@ router.route("/:id")
   .put(controller.update)
   .delete(controller.remove);
 
+// router.route("/pull-articles")
+//   .get(controller.apiGo);
+
 module.exports = router;

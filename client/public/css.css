@@ -1,0 +1,8 @@
+.list-group-item {
+  word-wrap: normal;
+  background: tan;
+}
+
+.wrap {
+  word-wrap: break-word;
+}
